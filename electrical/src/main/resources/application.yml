@@ -1,6 +1,8 @@
 server:
   port: 7001
-
+gps:
+  socket:
+    tcpPort: 9611
 logging:
   level:
     org:
