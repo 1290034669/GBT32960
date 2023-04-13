@@ -11,6 +11,7 @@ import com.yzxc.common.type.RequestType;
 import com.yzxc.common.type.ResponseTag;
 import com.yzxc.common.util.GBT32960Message;
 import com.yzxc.common.util.ResponseMessage;
+import com.yzxc.common.util.Time;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -72,6 +73,7 @@ public class ProtocolNettyHandler extends ChannelDuplexHandler {
                 realTimeResponse(context, msg);
                 EXECUTOR_SERVICE.execute(() -> {
                     RealTimeReport realTimeReport = (RealTimeReport) message.getDataUnit();
+                    log.info("数据GPS时间：{}", Time.timeStamp2Date(realTimeReport.getRecordTime(), "yyyy-MM-dd HH:mm:ss"));
                 });
                 break;
             case PLATFORM_LOGIN:
@@ -89,29 +91,25 @@ public class ProtocolNettyHandler extends ChannelDuplexHandler {
     private void loginResponse(ChannelHandlerContext context, Object msg) {
         GBT32960Message message = toGBT32960Message(msg);
         LoginRequest dataUnit = (LoginRequest) message.getDataUnit();
-        String vin = message.getHeader().getVin();
-        context.writeAndFlush(responseMessage(vin, RequestType.LOGIN, ResponseTag.SUCCESS));
+        context.writeAndFlush(responseMessage(message.getHeader().getVin(), RequestType.LOGIN, ResponseTag.SUCCESS));
     }
 
     private void logoutResponse(ChannelHandlerContext context, Object msg) {
         GBT32960Message message = toGBT32960Message(msg);
         LogoutRequest dataUnit = (LogoutRequest) message.getDataUnit();
-        String vin = message.getHeader().getVin();
-        context.writeAndFlush(responseMessage(vin, RequestType.LOGOUT, ResponseTag.SUCCESS));
+        context.writeAndFlush(responseMessage(message.getHeader().getVin(), RequestType.LOGOUT, ResponseTag.SUCCESS));
     }
 
     private void reIssueResponse(ChannelHandlerContext context, Object msg) {
         GBT32960Message message = toGBT32960Message(msg);
         RealTimeReport dataUnit = (RealTimeReport) message.getDataUnit();
-        String vin = message.getHeader().getVin();
-        context.writeAndFlush(responseMessage(vin, RequestType.REISSUE, ResponseTag.SUCCESS));
+        context.writeAndFlush(responseMessage(message.getHeader().getVin(), RequestType.REISSUE, ResponseTag.SUCCESS));
     }
 
     private void realTimeResponse(ChannelHandlerContext context, Object msg) {
         GBT32960Message message = toGBT32960Message(msg);
         RealTimeReport dataUnit = (RealTimeReport) message.getDataUnit();
-        String vin = message.getHeader().getVin();
-        context.writeAndFlush(responseMessage(vin, RequestType.REAL_TIME, ResponseTag.SUCCESS));
+        context.writeAndFlush(responseMessage(message.getHeader().getVin(), RequestType.REAL_TIME, ResponseTag.SUCCESS));
     }
 
     private ResponseMessage responseMessage(String vin, RequestType requestType, ResponseTag responseTag) {
@@ -138,7 +136,6 @@ public class ProtocolNettyHandler extends ChannelDuplexHandler {
     private void platformLogoutResponse(ChannelHandlerContext context, Object msg) {
         GBT32960Message message = toGBT32960Message(msg);
         LoginPlatform dataUnit = (LoginPlatform) message.getDataUnit();
-        String vin = message.getHeader().getVin();
-        context.writeAndFlush(responseMessage(vin, RequestType.PLATFORM_LOGOUT, ResponseTag.FAILED));
+        context.writeAndFlush(responseMessage(message.getHeader().getVin(), RequestType.PLATFORM_LOGOUT, ResponseTag.FAILED));
     }
 }
