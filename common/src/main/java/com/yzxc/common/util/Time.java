@@ -232,7 +232,7 @@ public class Time {
 
     public static Timestamp getNowOfSmnap(int day) {
         return new Timestamp(System.currentTimeMillis() + day * 24 * 60 * 60
-                * 1000);
+                * 1000L);
     }
 
     public static String getDateInt() {
@@ -342,7 +342,7 @@ public class Time {
         }
         String daily = y + M + D;
 
-        return Integer.valueOf(daily);
+        return Integer.parseInt(daily);
     }
 
     public static Date getYesterday(Date date, Integer difDays) {
@@ -366,8 +366,8 @@ public class Time {
         long time1 = cal.getTimeInMillis();
         cal.setTime(another);
         long time2 = cal.getTimeInMillis();
-        long betweenDays = (time2 - time1) / (1L * 1000 * 3600 * 24);
-        cal.setTime(new Date(time2 - betweenDays * (1L * 1000 * 3600 * 24)));
+        long betweenDays = (time2 - time1) / (1000L * 3600 * 24);
+        cal.setTime(new Date(time2 - betweenDays * (1000L * 3600 * 24)));
         if (day == cal.get(Calendar.DAY_OF_MONTH)) {
             return (int) betweenDays;
         } else {
@@ -380,9 +380,9 @@ public class Time {
         String split1 = "-";
         String split2 = " ";
         String split3 = ":";
-        String times[] = gpsTime.split("[^0-9]");
+        String[] times = gpsTime.split("[^0-9]");
         if (times.length == 6) {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             for (int i = 0; i < times.length; i++) {
                 if (i < 2) {
                     result.append(times[i]);
